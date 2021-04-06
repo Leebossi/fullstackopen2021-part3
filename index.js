@@ -31,6 +31,7 @@ morgan.token('jsonData', function (request, response) {
 })
 
 app.use(express.json())
+app.use(express.static('build'))
 app.use(cors())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :jsonData'))
 
