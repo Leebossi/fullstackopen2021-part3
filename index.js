@@ -1,5 +1,5 @@
-const { response, request } = require('express')
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
 
 let persons = [
@@ -25,7 +25,12 @@ let persons = [
     }
 ]
 
+morgan.token('jsonData', function (request, response) {
+    return JSON.stringify(request.body)
+})
+
 app.use(express.json())
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :jsonData'))
 
 const generateId = (max) => {
     return Math.floor(Math.random() * max)
@@ -64,7 +69,7 @@ app.post('/api/persons', (request, response) => {
         return response.status(400).json({
             error: 'content missing'
         })
-    } else if (persons.find(person => person.name === body.name)) {
+    } else if (persons.find(person => person.name === body.namen)) {
         return response.status(400).json({
             error: 'name must be unique'
         })
@@ -75,8 +80,6 @@ app.post('/api/persons', (request, response) => {
         name: body.name,
         number: body.number,
     }
-    
-    console.log(person)
     
     persons = persons.concat(person)
     
